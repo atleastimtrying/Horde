@@ -35,12 +35,6 @@
 
   app.get('/', routes.index);
 
-  app.get('/input', function(req, res) {
-    return res.render('input', {
-      title: 'input'
-    });
-  });
-
   app.listen(3000);
 
   console.log("Express server listening on port " + (app.address().port));

@@ -24,9 +24,6 @@ app.configure 'production', ->
 
 app.get '/', routes.index
 
-app.get '/input', (req, res)->
-  res.render 'input', { title: 'input' }
-
 app.listen 3000
 console.log "Express server listening on port #{app.address().port}"
 
