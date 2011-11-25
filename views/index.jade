@@ -1,6 +1,14 @@
 header
   h2 Horde
   p use the wsad keys to move and the mouse to focus and fire.
+  nav
+    ol
+      li 
+        button(id='new-game') New Game
+      li
+        button(id='view-games-in-progress') View Active Games
+      li
+        button(id='view-invites') View Invites
 
 canvas#canvasscript(src='/javascripts/index.js')
 
