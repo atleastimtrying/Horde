@@ -8,11 +8,7 @@ html
     script(src='/javascripts/libs/jquery-1.5.min.js')
     script(src='/javascripts/libs/underscore.js')
     script(src='/javascripts/libs/backbone.js')
-    script(src='/javascripts/libs/r.js')
     script(src='/socket.io/socket.io.js')
-
-    script(src='/javascripts/input.js')
-    script(src='/javascripts/game.js')
-    script(src='/javascripts/app.js')
-  body!= body
+    script(data-main='/javascripts/modeals/app.js' src='/javascripts/libs/r.js')
+ww  body!= body
     span(id='login')
