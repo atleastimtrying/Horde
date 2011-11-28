@@ -1,4 +1,0 @@
-This is going to be horde, a multiplayer game in which you and a few friends fight off endless waves of monsters.
-the plan is to use node and express to serve up pages. starting with a single player game, twitter @anywhere iwll be added in then websockets for extending the game.
-
-Anders
