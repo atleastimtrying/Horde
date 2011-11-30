@@ -9,26 +9,30 @@ class window.Bullet
     @yspeed = @speed * @p5.cos @p5.radians @angle + 180
     @dead = false
 
-  draw: ->
+  draw: =>
     @p5.fill 0
     @p5.ellipse @x,@y,2,2
     @x -= @xspeed
     @y += @yspeed
     @hitTest()
   
-  hitTest: ->
-    @dead = true if @offEdge()
+  hitTest: =>
+    #@die() if @offEdge()
     #@dead = true if cover.intersect(@) for cover in @app.covers
     if @owner.player
       for enemy in @app.enemies
-        do (enemy)
+        do (enemy) =>
           if @app.intersect(@,enemy)
-            @dead = true
-            @enemy.hit()
+            enemy.hit()
+            @die()
     else
-      if @app.intersect(@,@owner.app.players[0])
-        @dead = true
+      if @app.intersect(@ , @owner.app.players[0])
         @owner.app.players[0].hit()
+        @die()
 
   offEdge: ->
     @x > @p5.width || @x < 0 || @y > @p5.height || @y < 0
+
+  die: ->
+    @dead = true
+    #@app.bullets.remove(@)

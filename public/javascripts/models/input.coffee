@@ -1,18 +1,28 @@
 class window.Input
 
   constructor: (@app)->
-    $(window).keypress @keyPressSet
-    @instructions = [0, 0]
+    $(window).bind 'keydown', @keyPressDown
+    $(window).bind 'keyup', @keyPressUp
+    $('canvas').mousedown @clicked
+    @keyDown = false
 
-  keyPressSet : (event)=>
-    if event.charCode is 119 #w
-      @instructions = [0, -1]
-    else if event.charCode is 115 #s
-      @instructions = [0, 1]
-    else if event.charCode is 97 #a
-      @instructions = [-1, 0]
-    else if event.charCode is 100 #d
-      @instructions = [1, 0]
-    else
-      @instructions = [0, 0]
-    @app.players[0].step @instructions
+  keyPressDown : (event)=>
+    @keyDown = true
+
+    @app.players[0].instructions = [0, -1] if event.keyCode is 87 #w
+
+    @app.players[0].instructions = [0, 1] if event.keyCode is 83 #s
+
+    @app.players[0].instructions = [-1, 0] if event.keyCode is 65 #a
+
+    @app.players[0].instructions = [1, 0] if event.keyCode is 68 #d
+
+  keyPressUp : =>
+    @keyDown = false
+    
+    @app.players[0].instructions = [0, 0]
+
+  clicked : (event)=>
+    @app.players[0].shoot() if event.which is 1
+    @app.players[0].melee() if event.which is 3
+    

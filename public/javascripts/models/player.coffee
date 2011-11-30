@@ -3,20 +3,22 @@ class window.Player
     @x = @p5.width/2
     @y = @p5.height/2
     @angle = @p5.random 360
-    @acceleration = 2
+    @acceleration = 1
     @rotationSpeed = 1
     @health = 10
     @ammo = 20
     @player = true
+    @rotationModifier = 90 #because sometimes CS makes me sad
   
   draw: =>
-    @angle = @p5.degrees 90 + @p5.atan2 @p5.mouseY - @y, @p5.mouseX - @x
+    @angle = @p5.degrees(@p5.atan2 @p5.mouseY - @y, @p5.mouseX - @x) + @rotationModifier
     @p5.translate @x, @y
     @p5.rotate @p5.radians @angle
     @drawMan()
     @p5.rotate @p5.radians -@angle
     @p5.translate -@x, -@y
     @rotation %= 360
+    @step() if @app.input.keyDown
 
   drawMan: ->
     @p5.fill 255
@@ -36,18 +38,21 @@ class window.Player
     @x = @p5.width/2
     @y = @p5.height/2
     @health = 10
+    @app.deaths += 1
 
   shoot: =>
     if @ammo > 0
       @app.bullets.push new Bullet @, @p5
-      ammo -=1;
+      @ammo -=1;
+  
+  melee: =>
+    console.log 'melee'
 
-  step: (instructions)=>
-
-    forwardspeed = instructions[1] * @acceleration
+  step: ->
+    forwardspeed = @instructions[1] * @acceleration
     @x -= forwardspeed * @p5.sin @p5.radians @angle      
     @y += forwardspeed * @p5.cos @p5.radians @angle
 
-    sidespeed = instructions[0] * @acceleration
-    @x -= sidespeed * @p5.sin @p5.radians @angle - 90      
-    @y += sidespeed * @p5.cos @p5.radians @angle - 90
+    sidespeed = @instructions[0] * @acceleration
+    @x -= sidespeed * @p5.sin @p5.radians @angle - @rotationModifier      
+    @y += sidespeed * @p5.cos @p5.radians @angle - @rotationModifier

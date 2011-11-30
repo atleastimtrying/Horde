@@ -1,3 +1,4 @@
+Array::remove = (e) -> @[t..t] = [] if (t = @indexOf(e)) > -1
 require [
   "javascripts/models/game.js"
   "javascripts/models/bullet.js"

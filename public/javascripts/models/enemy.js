@@ -1,8 +1,6 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-
   window.Enemy = (function() {
-
     function Enemy(p5, app) {
       this.p5 = p5;
       this.app = app;
@@ -22,7 +20,6 @@
       this.dead = false;
       this.player = false;
     }
-
     Enemy.prototype.draw = function() {
       this.angle = this.p5.degrees(90 + this.p5.atan2(this.app.players[0].y - this.y, this.app.players[0].x - this.x));
       this.p5.translate(this.x, this.y);
@@ -34,7 +31,6 @@
       this.attack();
       return this.step();
     };
-
     Enemy.prototype.drawEnemy = function() {
       this.p5.fill(0);
       this.p5.rect(-20, -10, 40, 20);
@@ -43,12 +39,10 @@
       this.p5.rect(-20, -15, 10, 5);
       return this.p5.rect(10, -15, 10, 5);
     };
-
     Enemy.prototype.step = function() {
       this.x += this.acceleration * this.p5.sin(this.p5.radians(this.angle));
       return this.y -= this.acceleration * this.p5.cos(this.p5.radians(this.angle));
     };
-
     Enemy.prototype.attack = function() {
       if (this.app.intersect(this, this.app.players[0])) {
         if (this.hittimer > 0) {
@@ -66,7 +60,6 @@
         }
       }
     };
-
     Enemy.prototype.hit = function() {
       if (this.health > 1) {
         return this.health -= 1;
@@ -74,21 +67,16 @@
         return this.die();
       }
     };
-
     Enemy.prototype.die = function() {
       this.dead = true;
       return this.app.killCount += 1;
     };
-
     Enemy.prototype.shoot = function() {
       if (this.ammo > 0) {
         this.app.bullets.push(new Bullet(this, this.p5));
         return this.ammo -= 1;
       }
     };
-
     return Enemy;
-
   })();
-
 }).call(this);
