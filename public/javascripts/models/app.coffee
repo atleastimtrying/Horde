@@ -6,9 +6,6 @@ require [
   "javascripts/models/player.js"
   "javascripts/models/sockets.js"
   "javascripts/models/twittermanager.js"
-  "javascripts/collections/bullets.js"
-  "javascripts/collections/enemies.js"
-  "javascripts/collections/players.js"
-  ], ($)->
-  $ ->
-    window.game = new window.Game()
+  ], ->
+    $ ->
+      window.game = new window.Game()

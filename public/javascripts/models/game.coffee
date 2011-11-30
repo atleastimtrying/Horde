@@ -1,12 +1,11 @@
-class window.Game extends Backbone.Model
-  initialize: ->
-    @set {
-      input : new window.Input()
-      players : new window.Players()
-      bullets : new window.Bullets()
-      enemies : new window.Enemies()
-    }
+class window.Game
+  constructor: ->
+    @input = new window.Input @
+    @players = []
+    @bullets = []
+    @enemies = []
     @p5 = new Processing $('canvas')[0], @sketch
+    @populateGame()
 
   sketch: (p5)=>  
     p5.setup = ->
@@ -17,6 +16,19 @@ class window.Game extends Backbone.Model
       
     p5.draw = @draw
 
+  populateGame: ->
+    @players.push new Player @p5, @
+    @enemies.push new Enemy @p5, @ for amount in [0..5]
+
+  fillEnemies: ->
+    @enemies = []
+
   draw: =>
-    @p5.ellipse @p5.random(@p5.width), @p5.random(@p5.height),10,10
+    @p5.background 150
+    player.draw() for player in @players
+    enemy.draw() for enemy in @enemies
+    bullet.draw() for bullet in @bullets
+  
+  intersect: (obj1, obj2)=>
+    @p5.dist(obj1.x, obj1.y, obj2.x, obj2.y) < 40
     

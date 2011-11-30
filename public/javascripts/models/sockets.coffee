@@ -1,5 +1,5 @@
-class window.Sockets extends Backbone.Model
-  initialize:->
+class window.Sockets
+  constructor:->
     @socket = io.connect 'http://localhost'
     @socket.on 'download', @updatePos
     @socket.on 'twitter login response', @twitterLoginResponse

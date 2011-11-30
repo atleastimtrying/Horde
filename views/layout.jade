@@ -7,8 +7,7 @@ html
     script(src='/javascripts/libs/processing.js')
     script(src='/javascripts/libs/jquery-1.5.min.js')
     script(src='/javascripts/libs/underscore.js')
-    script(src='/javascripts/libs/backbone.js')
     script(src='/socket.io/socket.io.js')
-    script(data-main='/javascripts/modeals/app.js' src='/javascripts/libs/r.js')
-ww  body!= body
+    script(src='/javascripts/libs/require.js',data-main='/javascripts/models/app')
+  body!= body
     span(id='login')

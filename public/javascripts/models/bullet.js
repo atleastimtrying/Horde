@@ -1,16 +1,19 @@
-(function() {
-  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
   window.Bullet = (function() {
 
-    __extends(Bullet, Backbone.Model);
-
-    function Bullet() {
-      Bullet.__super__.constructor.apply(this, arguments);
+    function Bullet(owner, p5) {
+      this.owner = owner;
+      this.p5 = p5;
+      this.x = this.owner.x;
+      this.y = this.owner.y;
+      this.angle = this.owner.angle;
     }
+
+    Bullet.prototype.draw = function() {
+      this.p5.fill(0);
+      return this.p5.ellipse(this.x, this.y, 2, 2);
+    };
 
     return Bullet;
 
   })();
-
-}).call(this);

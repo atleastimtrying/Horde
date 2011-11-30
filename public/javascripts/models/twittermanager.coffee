@@ -1,5 +1,5 @@
-class window.TwitterManager extends Backbone.Model
-  initialize : ->
+class window.TwitterManager
+  constructor : (@app)->
     twttr.anywhere (T)=>
 
       T('#login').connectButton()
@@ -16,7 +16,7 @@ class window.TwitterManager extends Backbone.Model
     $('body').append '<button id="logout" type="button">log out of this site on twitter</button>'
     $('#logout').bind 'click', ->
       twttr.anywhere.signOut()
-    @emitTwitterID()
+    @app.sockets.emitTwitterID()
 
   destroyUser: ->
     @user = {}
