@@ -3,12 +3,13 @@ class window.Player
     @x = @p5.width/2
     @y = @p5.height/2
     @angle = @p5.random 360
-    @acceleration = 1
+    @acceleration = 2
     @rotationSpeed = 1
     @health = 10
     @ammo = 20
     @player = true
     @rotationModifier = 90 #because sometimes CS makes me sad
+    @instructions = [0, 0]
   
   draw: =>
     @angle = @p5.degrees(@p5.atan2 @p5.mouseY - @y, @p5.mouseX - @x) + @rotationModifier
@@ -46,7 +47,10 @@ class window.Player
       @ammo -=1;
   
   melee: =>
-    console.log 'melee'
+    for enemy in @app.enemies
+      do (enemy) =>
+        if enemy.dead isnt true and @app.intersect(@, enemy)
+          enemy.hit()
 
   step: ->
     forwardspeed = @instructions[1] * @acceleration

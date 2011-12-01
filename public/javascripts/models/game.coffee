@@ -4,18 +4,20 @@ class window.Game
     @players = []
     @bullets = []
     @enemies = []
+    @crates = []
     @p5 = new Processing $('canvas')[0], @sketch
     @populateGame()
     @kills = 0
     @deaths = 0
+    @paused = false
 
   sketch: (p5)=>  
     p5.setup = ->
       p5.size $('canvas').width(),$('canvas').height()
       p5.background 0x666666
       p5.noStroke()
-      p5.smooth()
-      
+      p5.smooth()      
+
     p5.draw = @draw
 
   populateGame: ->
@@ -25,17 +27,29 @@ class window.Game
   fillEnemies: ->
     @enemies = []
 
+
   draw: =>
     @p5.background 150
     player.draw() for player in @players
     enemy.draw() for enemy in @enemies
-    bullet.draw() unless bullet.dead for bullet in @bullets
+    bullet.draw() for bullet in @bullets
+    crate.draw() for crate in @crates
+    @displayStats()
+  
+  intersect: (obj1, obj2)=>
+    @p5.dist(obj1.x, obj1.y, obj2.x, obj2.y) < 40
+
+  displayStats: ->
     $('.kills').html "kills : #{@kills}"
     $('.deaths').html "deaths : #{@deaths}"
     $('.ammo').html "ammo : #{@players[0].ammo}"
     $('.bullets').html "bullets : #{@bullets.length}"
     $('.health').html "health : #{@players[0].health}"
-  
-  intersect: (obj1, obj2)=>
-    @p5.dist(obj1.x, obj1.y, obj2.x, obj2.y) < 40
-    
+
+  pauseToggle: =>
+    if @paused
+      @p5.loop()
+      @paused = false
+    else
+      @p5.noLoop()
+      @paused = true    

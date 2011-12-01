@@ -17,9 +17,10 @@ class window.Input
 
     @app.players[0].instructions = [1, 0] if event.keyCode is 68 #d
 
+    @app.pauseToggle() if event.keyCode is 32 #spacebar
+
   keyPressUp : =>
     @keyDown = false
-    
     @app.players[0].instructions = [0, 0]
 
   clicked : (event)=>

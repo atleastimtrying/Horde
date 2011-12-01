@@ -7,21 +7,23 @@ class window.Enemy
     @rotationSpeed = 1
     @health = 5
     @ammo = 20
+    @rotationModifier = 90 #because sometimes CS makes me sad
     @shotlimit = @shottimer = 150 + @p5.random 70
     @hittimer = 20
     @dead = false
     @player = false
 
   draw: =>
-    @angle = @p5.degrees 90 + @p5.atan2 @app.players[0].y - @y, @app.players[0].x - @x
-    @p5.translate @x, @y
-    @p5.rotate @p5.radians @angle
-    @drawEnemy()
-    @p5.rotate @p5.radians -@angle
-    @p5.translate -@x, -@y
-    @rotation %= 360
-    @attack()
-    @step()
+    if @dead isnt true 
+      @angle = @p5.degrees( @p5.atan2 @app.players[0].y - @y, @app.players[0].x - @x) + @rotationModifier
+      @p5.translate @x, @y
+      @p5.rotate @p5.radians @angle
+      @drawEnemy()
+      @p5.rotate @p5.radians -@angle
+      @p5.translate -@x, -@y
+      @rotation %= 360
+      @attack()
+      @step()
 
   drawEnemy: ->
     @p5.fill 0
@@ -30,6 +32,8 @@ class window.Enemy
     @p5.ellipse 0, 0, 20, 20
     @p5.rect -20, -15, 10, 5
     @p5.rect 10,-15,10,5
+    @p5.fill 0
+    @p5.text @health, -30,-30
 
   step: ->
     @x += @acceleration * @p5.sin @p5.radians @angle
@@ -56,6 +60,9 @@ class window.Enemy
       @die()
   
   die: =>
+    randy = @p5.random 10
+    @app.crates.push new Crate(@x, @y, true, @app) if randy > 8
+    @app.crates.push new Crate(@x, @y, true, @app) if randy < 2
     @dead = true
     @app.killCount += 1
 

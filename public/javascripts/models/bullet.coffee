@@ -10,19 +10,20 @@ class window.Bullet
     @dead = false
 
   draw: =>
-    @p5.fill 0
-    @p5.ellipse @x,@y,2,2
-    @x -= @xspeed
-    @y += @yspeed
-    @hitTest()
+    if @dead isnt true 
+      @p5.fill 0
+      @p5.ellipse @x,@y,2,2
+      @x -= @xspeed
+      @y += @yspeed
+      @hitTest()
   
   hitTest: =>
-    #@die() if @offEdge()
+    @die() if @offEdge()
     #@dead = true if cover.intersect(@) for cover in @app.covers
     if @owner.player
       for enemy in @app.enemies
         do (enemy) =>
-          if @app.intersect(@,enemy)
+          if enemy.dead isnt true and @app.intersect(@,enemy)
             enemy.hit()
             @die()
     else
