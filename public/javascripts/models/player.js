@@ -3,14 +3,15 @@
 
   window.Player = (function() {
 
-    function Player(p5, app) {
-      this.p5 = p5;
+    function Player(app) {
       this.app = app;
+      this.dropBomb = __bind(this.dropBomb, this);
       this.melee = __bind(this.melee, this);
       this.shoot = __bind(this.shoot, this);
       this.die = __bind(this.die, this);
       this.hit = __bind(this.hit, this);
       this.draw = __bind(this.draw, this);
+      this.p5 = this.app.p5;
       this.x = this.p5.width / 2;
       this.y = this.p5.height / 2;
       this.angle = this.p5.random(360);
@@ -60,7 +61,7 @@
 
     Player.prototype.shoot = function() {
       if (this.ammo > 0) {
-        this.app.bullets.push(new Bullet(this, this.p5));
+        this.app.bullets.push(new Bullet(this));
         return this.ammo -= 1;
       }
     };
@@ -73,9 +74,7 @@
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         enemy = _ref[_i];
         _results.push((function(enemy) {
-          if (enemy.dead !== true && _this.app.intersect(_this, enemy)) {
-            return enemy.hit();
-          }
+          if (enemy && _this.app.intersect(_this, enemy)) return enemy.hit();
         })(enemy));
       }
       return _results;
@@ -89,6 +88,10 @@
       sidespeed = this.instructions[0] * this.acceleration;
       this.x -= sidespeed * this.p5.sin(this.p5.radians(this.angle - this.rotationModifier));
       return this.y += sidespeed * this.p5.cos(this.p5.radians(this.angle - this.rotationModifier));
+    };
+
+    Player.prototype.dropBomb = function() {
+      return this.app.bombs.push(new Bomb(this));
     };
 
     return Player;

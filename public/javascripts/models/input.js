@@ -16,21 +16,23 @@
 
     Input.prototype.keyPressDown = function(event) {
       this.keyDown = true;
-      if (event.keyCode === 87) this.app.players[0].instructions = [0, -1];
-      if (event.keyCode === 83) this.app.players[0].instructions = [0, 1];
-      if (event.keyCode === 65) this.app.players[0].instructions = [-1, 0];
-      if (event.keyCode === 68) this.app.players[0].instructions = [1, 0];
+      if (event.keyCode === 87) this.app.localPlayer.instructions = [0, -1];
+      if (event.keyCode === 83) this.app.localPlayer.instructions = [0, 1];
+      if (event.keyCode === 65) this.app.localPlayer.instructions = [-1, 0];
+      if (event.keyCode === 68) this.app.localPlayer.instructions = [1, 0];
+      if (event.keyCode === 68) this.app.localPlayer.instructions = [1, 0];
+      if (event.keyCode === 66) this.app.localPlayer.dropBomb();
       if (event.keyCode === 32) return this.app.pauseToggle();
     };
 
     Input.prototype.keyPressUp = function() {
       this.keyDown = false;
-      return this.app.players[0].instructions = [0, 0];
+      return this.app.localPlayer.instructions = [0, 0];
     };
 
     Input.prototype.clicked = function(event) {
-      if (event.which === 1) this.app.players[0].shoot();
-      if (event.which === 3) return this.app.players[0].melee();
+      if (event.which === 1) this.app.localPlayer.shoot();
+      if (event.which === 3) return this.app.localPlayer.melee();
     };
 
     return Input;

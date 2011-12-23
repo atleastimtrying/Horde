@@ -12,7 +12,8 @@ class window.TwitterManager
       T.bind 'signOut', =>
         @destroyUser()
 
-  makeUser: (@user)=>
+  makeUser: (user)=>
+    @app.user = user
     $('body').append '<button id="logout" type="button">log out of this site on twitter</button>'
     $('#logout').bind 'click', ->
       twttr.anywhere.signOut()

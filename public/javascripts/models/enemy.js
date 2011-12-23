@@ -3,13 +3,13 @@
 
   window.Enemy = (function() {
 
-    function Enemy(p5, app) {
-      this.p5 = p5;
+    function Enemy(app) {
       this.app = app;
       this.shoot = __bind(this.shoot, this);
       this.die = __bind(this.die, this);
       this.hit = __bind(this.hit, this);
       this.draw = __bind(this.draw, this);
+      this.p5 = this.app.p5;
       this.x = this.p5.width;
       this.y = this.p5.random(this.p5.height);
       this.angle = this.p5.random(360);
@@ -20,22 +20,19 @@
       this.rotationModifier = 90;
       this.shotlimit = this.shottimer = 150 + this.p5.random(70);
       this.hittimer = 20;
-      this.dead = false;
       this.player = false;
     }
 
     Enemy.prototype.draw = function() {
-      if (this.dead !== true) {
-        this.angle = this.p5.degrees(this.p5.atan2(this.app.players[0].y - this.y, this.app.players[0].x - this.x)) + this.rotationModifier;
-        this.p5.translate(this.x, this.y);
-        this.p5.rotate(this.p5.radians(this.angle));
-        this.drawEnemy();
-        this.p5.rotate(this.p5.radians(-this.angle));
-        this.p5.translate(-this.x, -this.y);
-        this.rotation %= 360;
-        this.attack();
-        return this.step();
-      }
+      this.angle = this.p5.degrees(this.p5.atan2(this.app.localPlayer.y - this.y, this.app.localPlayer.x - this.x)) + this.rotationModifier;
+      this.p5.translate(this.x, this.y);
+      this.p5.rotate(this.p5.radians(this.angle));
+      this.drawEnemy();
+      this.p5.rotate(this.p5.radians(-this.angle));
+      this.p5.translate(-this.x, -this.y);
+      this.rotation %= 360;
+      this.attack();
+      return this.step();
     };
 
     Enemy.prototype.drawEnemy = function() {
@@ -44,9 +41,7 @@
       this.p5.fill(200, 100, 10);
       this.p5.ellipse(0, 0, 20, 20);
       this.p5.rect(-20, -15, 10, 5);
-      this.p5.rect(10, -15, 10, 5);
-      this.p5.fill(0);
-      return this.p5.text(this.health, -30, -30);
+      return this.p5.rect(10, -15, 10, 5);
     };
 
     Enemy.prototype.step = function() {
@@ -55,12 +50,12 @@
     };
 
     Enemy.prototype.attack = function() {
-      if (this.app.intersect(this, this.app.players[0])) {
+      if (this.app.intersect(this, this.app.localPlayer)) {
         if (this.hittimer > 0) {
           return this.hittimer -= 1;
         } else {
           this.hittimer = 20;
-          return this.app.players[0].hit();
+          return this.app.localPlayer.hit();
         }
       } else {
         if (this.shottimer > 0) {
@@ -81,21 +76,25 @@
     };
 
     Enemy.prototype.die = function() {
+      this.makeCrate();
+      this.app.killCount += 1;
+      return this.app.enemies.splice(this.app.enemies.indexOf(this), 1);
+    };
+
+    Enemy.prototype.makeCrate = function() {
       var randy;
       randy = this.p5.random(10);
       if (randy > 8) {
         this.app.crates.push(new Crate(this.x, this.y, true, this.app));
       }
       if (randy < 2) {
-        this.app.crates.push(new Crate(this.x, this.y, true, this.app));
+        return this.app.crates.push(new Crate(this.x, this.y, false, this.app));
       }
-      this.dead = true;
-      return this.app.killCount += 1;
     };
 
     Enemy.prototype.shoot = function() {
       if (this.ammo > 0) {
-        this.app.bullets.push(new Bullet(this, this.p5));
+        this.app.bullets.push(new Bullet(this));
         return this.ammo -= 1;
       }
     };

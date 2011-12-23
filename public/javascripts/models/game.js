@@ -7,13 +7,16 @@
       this.pauseToggle = __bind(this.pauseToggle, this);
       this.intersect = __bind(this.intersect, this);
       this.draw = __bind(this.draw, this);
-      this.sketch = __bind(this.sketch, this);      this.input = new window.Input(this);
+      this.sketch = __bind(this.sketch, this);      this.input = new Input(this);
+      this.sockets = new Sockets(this);
+      this.twittermanager = new TwitterManager(this);
       this.players = [];
       this.bullets = [];
       this.enemies = [];
       this.crates = [];
+      this.bombs = [];
       this.p5 = new Processing($('canvas')[0], this.sketch);
-      this.populateGame();
+      this.localPlayer = new Player(this);
       this.kills = 0;
       this.deaths = 0;
       this.paused = false;
@@ -29,43 +32,18 @@
       return p5.draw = this.draw;
     };
 
-    Game.prototype.populateGame = function() {
-      var amount, _results;
-      this.players.push(new Player(this.p5, this));
-      _results = [];
-      for (amount = 0; amount <= 2; amount++) {
-        _results.push(this.enemies.push(new Enemy(this.p5, this)));
-      }
-      return _results;
-    };
-
     Game.prototype.fillEnemies = function() {
       return this.enemies = [];
     };
 
     Game.prototype.draw = function() {
-      var bullet, crate, enemy, player, _i, _j, _k, _l, _len, _len2, _len3, _len4, _ref, _ref2, _ref3, _ref4;
       this.p5.background(150);
-      _ref = this.players;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        player = _ref[_i];
-        player.draw();
-      }
-      _ref2 = this.enemies;
-      for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
-        enemy = _ref2[_j];
-        enemy.draw();
-      }
-      _ref3 = this.bullets;
-      for (_k = 0, _len3 = _ref3.length; _k < _len3; _k++) {
-        bullet = _ref3[_k];
-        bullet.draw();
-      }
-      _ref4 = this.crates;
-      for (_l = 0, _len4 = _ref4.length; _l < _len4; _l++) {
-        crate = _ref4[_l];
-        crate.draw();
-      }
+      this.drawtest(this.crates);
+      this.drawtest(this.bullets);
+      this.drawtest(this.players);
+      this.drawtest(this.enemies);
+      this.drawtest(this.bombs);
+      this.localPlayer.draw();
       return this.displayStats();
     };
 
@@ -76,9 +54,8 @@
     Game.prototype.displayStats = function() {
       $('.kills').html("kills : " + this.kills);
       $('.deaths').html("deaths : " + this.deaths);
-      $('.ammo').html("ammo : " + this.players[0].ammo);
-      $('.bullets').html("bullets : " + this.bullets.length);
-      return $('.health').html("health : " + this.players[0].health);
+      $('.ammo').html("ammo : " + this.localPlayer.ammo);
+      return $('.health').html("health : " + this.localPlayer.health);
     };
 
     Game.prototype.pauseToggle = function() {
@@ -89,6 +66,22 @@
         this.p5.noLoop();
         return this.paused = true;
       }
+    };
+
+    Game.prototype.drawtest = function(array) {
+      var obj, _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = array.length; _i < _len; _i++) {
+        obj = array[_i];
+        _results.push((function(obj) {
+          if (obj) return obj.draw();
+        })(obj));
+      }
+      return _results;
+    };
+
+    Game.prototype.addEnemies = function() {
+      if (this.enemies.length < 5) return this.enemies.push(new Enemy(this));
     };
 
     return Game;

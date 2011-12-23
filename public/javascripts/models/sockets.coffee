@@ -1,12 +1,12 @@
 class window.Sockets
-  constructor:->
+  constructor: (@app)->
     @socket = io.connect 'http://localhost'
     @socket.on 'download', @updatePos
     @socket.on 'twitter login response', @twitterLoginResponse
 
-  emitTwitterID: ->
+  emitTwitterID: =>
     @socket.emit 'logged in',{
-      twitter_id: @user.attributes.id
+      twitter_id: @app.user.attributes.id
     }
 
   updatePos: (data)->

@@ -1,5 +1,6 @@
 class window.Player 
-  constructor: (@p5, @app)->
+  constructor: (@app)->
+    @p5 = @app.p5
     @x = @p5.width/2
     @y = @p5.height/2
     @angle = @p5.random 360
@@ -43,13 +44,13 @@ class window.Player
 
   shoot: =>
     if @ammo > 0
-      @app.bullets.push new Bullet @, @p5
-      @ammo -=1;
+      @app.bullets.push new Bullet @
+      @ammo -=1
   
   melee: =>
     for enemy in @app.enemies
       do (enemy) =>
-        if enemy.dead isnt true and @app.intersect(@, enemy)
+        if enemy and @app.intersect(@, enemy)
           enemy.hit()
 
   step: ->
@@ -60,3 +61,6 @@ class window.Player
     sidespeed = @instructions[0] * @acceleration
     @x -= sidespeed * @p5.sin @p5.radians @angle - @rotationModifier      
     @y += sidespeed * @p5.cos @p5.radians @angle - @rotationModifier
+
+  dropBomb: =>
+    @app.bombs.push new Bomb @

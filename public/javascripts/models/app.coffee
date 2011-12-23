@@ -1,7 +1,7 @@
-Array::remove = (e) -> @[t..t] = [] if (t = @indexOf(e)) > -1
 require [
   "javascripts/models/game.js"
   "javascripts/models/bullet.js"
+  "javascripts/models/bomb.js"
   "javascripts/models/crate.js"
   "javascripts/models/enemy.js"
   "javascripts/models/input.js"

@@ -1,5 +1,6 @@
 class window.Enemy
-  constructor: (@p5, @app)->
+  constructor: (@app)->
+    @p5 = @app.p5
     @x = @p5.width
     @y = @p5.random @p5.height
     @angle = @p5.random 360
@@ -10,20 +11,18 @@ class window.Enemy
     @rotationModifier = 90 #because sometimes CS makes me sad
     @shotlimit = @shottimer = 150 + @p5.random 70
     @hittimer = 20
-    @dead = false
     @player = false
 
   draw: =>
-    if @dead isnt true 
-      @angle = @p5.degrees( @p5.atan2 @app.players[0].y - @y, @app.players[0].x - @x) + @rotationModifier
-      @p5.translate @x, @y
-      @p5.rotate @p5.radians @angle
-      @drawEnemy()
-      @p5.rotate @p5.radians -@angle
-      @p5.translate -@x, -@y
-      @rotation %= 360
-      @attack()
-      @step()
+    @angle = @p5.degrees( @p5.atan2 @app.localPlayer.y - @y, @app.localPlayer.x - @x) + @rotationModifier
+    @p5.translate @x, @y
+    @p5.rotate @p5.radians @angle
+    @drawEnemy()
+    @p5.rotate @p5.radians -@angle
+    @p5.translate -@x, -@y
+    @rotation %= 360
+    @attack()
+    @step()
 
   drawEnemy: ->
     @p5.fill 0
@@ -32,20 +31,18 @@ class window.Enemy
     @p5.ellipse 0, 0, 20, 20
     @p5.rect -20, -15, 10, 5
     @p5.rect 10,-15,10,5
-    @p5.fill 0
-    @p5.text @health, -30,-30
 
   step: ->
     @x += @acceleration * @p5.sin @p5.radians @angle
     @y -= @acceleration * @p5.cos @p5.radians @angle
 
   attack: ->
-    if @app.intersect(@, @app.players[0])
+    if @app.intersect(@, @app.localPlayer)
       if @hittimer > 0
         @hittimer -= 1
       else
         @hittimer = 20
-        @app.players[0].hit()
+        @app.localPlayer.hit()
     else
       if @shottimer > 0
         @shottimer -= 1
@@ -60,13 +57,16 @@ class window.Enemy
       @die()
   
   die: =>
+    @makeCrate()
+    @app.killCount += 1
+    @app.enemies.splice @app.enemies.indexOf(@), 1
+
+  makeCrate: ->
     randy = @p5.random 10
     @app.crates.push new Crate(@x, @y, true, @app) if randy > 8
-    @app.crates.push new Crate(@x, @y, true, @app) if randy < 2
-    @dead = true
-    @app.killCount += 1
+    @app.crates.push new Crate(@x, @y, false, @app) if randy < 2
 
   shoot: =>
     if @ammo > 0
-      @app.bullets.push new Bullet @, @p5
+      @app.bullets.push new Bullet @
       @ammo -=1;

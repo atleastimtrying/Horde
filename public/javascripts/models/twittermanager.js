@@ -20,7 +20,7 @@
     }
 
     TwitterManager.prototype.makeUser = function(user) {
-      this.user = user;
+      this.app.user = user;
       $('body').append('<button id="logout" type="button">log out of this site on twitter</button>');
       $('#logout').bind('click', function() {
         return twttr.anywhere.signOut();

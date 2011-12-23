@@ -1,12 +1,15 @@
 class window.Game
   constructor: ->
-    @input = new window.Input @
+    @input = new Input @
+    @sockets = new Sockets @
+    @twittermanager = new TwitterManager @
     @players = []
     @bullets = []
     @enemies = []
     @crates = []
+    @bombs = []
     @p5 = new Processing $('canvas')[0], @sketch
-    @populateGame()
+    @localPlayer = new Player @
     @kills = 0
     @deaths = 0
     @paused = false
@@ -20,21 +23,21 @@ class window.Game
 
     p5.draw = @draw
 
-  populateGame: ->
-    @players.push new Player @p5, @
-    @enemies.push new Enemy @p5, @ for amount in [0..2]
-
   fillEnemies: ->
     @enemies = []
 
 
   draw: =>
     @p5.background 150
-    player.draw() for player in @players
-    enemy.draw() for enemy in @enemies
-    bullet.draw() for bullet in @bullets
-    crate.draw() for crate in @crates
+
+    @drawtest @crates
+    @drawtest @bullets
+    @drawtest @players
+    @drawtest @enemies
+    @drawtest @bombs
+    @localPlayer.draw()
     @displayStats()
+    #@addEnemies()
   
   intersect: (obj1, obj2)=>
     @p5.dist(obj1.x, obj1.y, obj2.x, obj2.y) < 40
@@ -42,9 +45,8 @@ class window.Game
   displayStats: ->
     $('.kills').html "kills : #{@kills}"
     $('.deaths').html "deaths : #{@deaths}"
-    $('.ammo').html "ammo : #{@players[0].ammo}"
-    $('.bullets').html "bullets : #{@bullets.length}"
-    $('.health').html "health : #{@players[0].health}"
+    $('.ammo').html "ammo : #{@localPlayer.ammo}"
+    $('.health').html "health : #{@localPlayer.health}"
 
   pauseToggle: =>
     if @paused
@@ -52,4 +54,12 @@ class window.Game
       @paused = false
     else
       @p5.noLoop()
-      @paused = true    
+      @paused = true
+  
+  drawtest: (array)->
+    for obj in array
+      do (obj)->
+        obj.draw() if obj 
+
+  addEnemies: ->
+    @enemies.push new Enemy @ if @enemies.length < 5
