@@ -1,5 +1,5 @@
 (function() {
-  var app, connections, express, io, routes;
+  var Player, app, connections, express, io, onClientDisconnect, onMovePlayer, onNewPlayer, onSocketConnection, players, routes, socket;
 
   express = require('express');
 
@@ -35,26 +35,52 @@
 
   app.get('/', routes.index);
 
-  app.listen(3000);
+  app.listen(8080);
 
   console.log("Express server listening on port " + (app.address().port));
 
-  io = require('socket.io').listen(app);
+  io = require('socket.io');
 
-  io.sockets.on('connection', function(socket) {
-    socket.on('upload', function(data) {
-      console.log(data);
-      return io.sockets.emit('download', {
-        x: data.x,
-        y: data.y
-      });
+  Player = (require('./Player')).Player;
+
+  socket = io.listen(app);
+
+  socket.set("log level", 2);
+
+  players = [];
+
+  onSocketConnection = function(client) {
+    console.log("new player connected " + client.id);
+    client.on('disconnect', onClientDisconnect);
+    client.on('new player', onNewPlayer);
+    return client.on('move player', onMovePlayer);
+  };
+
+  onClientDisconnect = function() {
+    return console.log("player disconnected " + this.id);
+  };
+
+  onNewPlayer = function(data) {
+    var newPlayer, player, _i, _len;
+    newPlayer = new Player(data.x, data.y, this.id);
+    this.broadcast.emit("new player", {
+      id: newPlayer.id,
+      x: newPlayer.x,
+      y: newPlayer.y
     });
-    return socket.on('logged in', function(data) {
-      return connections.push({
-        twitter_id: data.twitter_id,
-        id: socket.id
+    for (_i = 0, _len = players.length; _i < _len; _i++) {
+      player = players[_i];
+      this.emit("new player", {
+        id: player.id,
+        x: player.x,
+        y: player.y
       });
-    });
-  });
+    }
+    return players.push(newPlayer);
+  };
+
+  onMovePlayer = function(data) {};
+
+  socket.sockets.on('connection', onSocketConnection);
 
 }).call(this);

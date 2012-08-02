@@ -24,18 +24,36 @@ app.configure 'production', ->
 
 app.get '/', routes.index
 
-app.listen 3000
+app.listen 8080
 console.log "Express server listening on port #{app.address().port}"
 
-io = require('socket.io').listen app
+#sockets stuff
 
-io.sockets.on 'connection', (socket)->
-  socket.on 'upload', (data)->
-    console.log data
-    io.sockets.emit 'download', {x: data.x, y: data.y}
-  
-  socket.on 'logged in', (data)->
-    connections.push {
-      twitter_id: data.twitter_id
-      id: socket.id
-    }
+io = require 'socket.io'
+Player = (require './Player').Player
+socket = io.listen app
+socket.set "log level", 2
+
+players = []
+
+onSocketConnection = (client)->
+  console.log "new player connected #{client.id}"
+  client.on 'disconnect', onClientDisconnect
+  client.on 'new player', onNewPlayer
+  client.on 'move player', onMovePlayer
+
+onClientDisconnect = ()->
+  console.log "player disconnected #{@id}"
+
+onNewPlayer = (data)->
+  newPlayer = new Player data.x, data.y, this.id
+  this.broadcast.emit "new player", 
+    id: newPlayer.id
+    x: newPlayer.x
+    y: newPlayer.y
+  this.emit "new player", {id: player.id, x: player.x, y: player.y} for player in players
+  players.push newPlayer
+
+onMovePlayer = (data)->
+
+socket.sockets.on 'connection', onSocketConnection
