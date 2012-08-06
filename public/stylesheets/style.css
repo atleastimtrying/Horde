@@ -5,3 +5,46 @@ canvas{
 body{
   padding-top:60px;
 }
+.chat{
+	position:fixed;
+	bottom:0;
+	right:0;
+	background:#eee;
+	color:#333;
+	width:200px;
+	height:280px;
+	padding:5px 5px 20px 5px;
+	overflow-y:scroll;
+	border-top-left-radius: 5px;
+	border-top:2px solid #333;
+	border-left:2px solid #333;
+}
+.chat input{
+	width:205px;
+	height:20px;
+	font-size:18px;
+	border:none;
+	position:absolute;
+	bottom:0;
+	left:-5px;
+	padding:5px;
+	padding-left:10px;
+	outline:none;
+	border-top:2px solid #333;
+	border-radius:0;
+}
+.chat p{
+	margin-bottom:0;
+}
+p.me{
+	color:#ccc;
+}
+p.error{
+	color:#633;
+}
+p.info{
+	color:#363;
+}
+p.message{
+	color:#636;
+}

@@ -1,5 +1,5 @@
 (function() {
-  var Player, app, connections, express, io, onClientDisconnect, onMovePlayer, onNewPlayer, onSocketConnection, players, routes, socket;
+  var Player, app, connections, express, io, newMessage, onSocketConnection, players, routes, socket;
 
   express = require('express');
 
@@ -50,36 +50,15 @@
   players = [];
 
   onSocketConnection = function(client) {
-    console.log("new player connected " + client.id);
-    client.on('disconnect', onClientDisconnect);
-    client.on('new player', onNewPlayer);
-    return client.on('move player', onMovePlayer);
+    return client.on('new message', newMessage);
   };
 
-  onClientDisconnect = function() {
-    return console.log("player disconnected " + this.id);
-  };
-
-  onNewPlayer = function(data) {
-    var newPlayer, player, _i, _len;
-    newPlayer = new Player(data.x, data.y, this.id);
-    this.broadcast.emit("new player", {
-      id: newPlayer.id,
-      x: newPlayer.x,
-      y: newPlayer.y
+  newMessage = function(data) {
+    return this.broadcast.emit("new message", {
+      message: data.message,
+      type: data.type
     });
-    for (_i = 0, _len = players.length; _i < _len; _i++) {
-      player = players[_i];
-      this.emit("new player", {
-        id: player.id,
-        x: player.x,
-        y: player.y
-      });
-    }
-    return players.push(newPlayer);
   };
-
-  onMovePlayer = function(data) {};
 
   socket.sockets.on('connection', onSocketConnection);
 
