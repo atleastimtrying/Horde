@@ -1,8 +1,6 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-
   window.Enemy = (function() {
-
     function Enemy(app) {
       this.app = app;
       this.shoot = __bind(this.shoot, this);
@@ -22,7 +20,6 @@
       this.hittimer = 20;
       this.player = false;
     }
-
     Enemy.prototype.draw = function() {
       this.angle = this.p5.degrees(this.p5.atan2(this.app.localPlayer.y - this.y, this.app.localPlayer.x - this.x)) + this.rotationModifier;
       this.p5.translate(this.x, this.y);
@@ -34,7 +31,6 @@
       this.attack();
       return this.step();
     };
-
     Enemy.prototype.drawEnemy = function() {
       this.p5.fill(0);
       this.p5.rect(-20, -10, 40, 20);
@@ -43,12 +39,10 @@
       this.p5.rect(-20, -15, 10, 5);
       return this.p5.rect(10, -15, 10, 5);
     };
-
     Enemy.prototype.step = function() {
       this.x += this.acceleration * this.p5.sin(this.p5.radians(this.angle));
       return this.y -= this.acceleration * this.p5.cos(this.p5.radians(this.angle));
     };
-
     Enemy.prototype.attack = function() {
       if (this.app.intersect(this, this.app.localPlayer)) {
         if (this.hittimer > 0) {
@@ -66,7 +60,6 @@
         }
       }
     };
-
     Enemy.prototype.hit = function() {
       if (this.health > 1) {
         return this.health -= 1;
@@ -74,13 +67,11 @@
         return this.die();
       }
     };
-
     Enemy.prototype.die = function() {
       this.makeCrate();
       this.app.killCount += 1;
       return this.app.enemies.splice(this.app.enemies.indexOf(this), 1);
     };
-
     Enemy.prototype.makeCrate = function() {
       var randy;
       randy = this.p5.random(10);
@@ -91,16 +82,12 @@
         return this.app.crates.push(new Crate(this.x, this.y, false, this.app));
       }
     };
-
     Enemy.prototype.shoot = function() {
       if (this.ammo > 0) {
         this.app.bullets.push(new Bullet(this));
         return this.ammo -= 1;
       }
     };
-
     return Enemy;
-
   })();
-
 }).call(this);

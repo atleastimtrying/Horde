@@ -1,33 +1,19 @@
 (function() {
-  var CanvasView;
-  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
-
-  CanvasView = (function() {
-
-    __extends(CanvasView, Backbone.View);
-
+  window.CanvasView = (function() {
     function CanvasView() {
-      CanvasView.__super__.constructor.apply(this, arguments);
+      this.canvas = $('canvas');
+      this.context = this.canvas[0].getContext('2d');
+      this.canvas.css({
+        width: "700px",
+        height: '400px'
+      });
+      this.canvas[0].width = 700;
+      this.canvas[0].height = 400;
+      this.render();
     }
-
-    CanvasView.prototype.el = $('canvas');
-
-    CanvasView.prototype.initialize = function() {
-      return this.context = this.canvas[0].getContext('2d');
-    };
-
-    _.bindAll(CanvasView);
-
-    CanvasView.render();
-
-    return CanvasView;
-
-  })();
-
-  ({
-    render: function() {
+    CanvasView.prototype.render = function() {
       return this.context.fillRect(10, 10, 10, 10);
-    }
-  });
-
+    };
+    return CanvasView;
+  })();
 }).call(this);

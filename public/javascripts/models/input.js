@@ -1,22 +1,51 @@
 (function() {
-  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
-
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   window.Input = (function() {
-
-    __extends(Input, Backbone.Model);
-
-    function Input() {
-      Input.__super__.constructor.apply(this, arguments);
+    function Input(app) {
+      this.app = app;
+      this.clicked = __bind(this.clicked, this);
+      this.keyPressUp = __bind(this.keyPressUp, this);
+      this.keyPressDown = __bind(this.keyPressDown, this);
+      $(window).bind('keydown', this.keyPressDown);
+      $(window).bind('keyup', this.keyPressUp);
+      $('canvas').mousedown(this.clicked);
+      this.keyDown = false;
     }
-
-    Input.prototype.initialize = function() {
-      return $(window).mousemove(this.move);
+    Input.prototype.keyPressDown = function(event) {
+      var message;
+      if (event.keyCode === 87) {
+        message = 'up';
+      }
+      if (event.keyCode === 83) {
+        message = 'down';
+      }
+      if (event.keyCode === 65) {
+        message = 'left';
+      }
+      if (event.keyCode === 68) {
+        message = 'right';
+      }
+      if (event.keyCode === 66) {
+        message = 'bomb';
+      }
+      if (event.keyCode === 32) {
+        message = 'pause';
+      }
+      return $(this.app).trigger(message);
     };
-
-    Input.prototype.move = function(event) {};
-
+    Input.prototype.keyPressUp = function() {
+      return $(this.app).trigger('keyup');
+    };
+    Input.prototype.clicked = function(event) {
+      var message;
+      if (event.which === 1) {
+        message = 'left';
+      }
+      if (event.which === 3) {
+        message = 'right';
+      }
+      return $(this.app).trigger(message);
+    };
     return Input;
-
   })();
-
 }).call(this);

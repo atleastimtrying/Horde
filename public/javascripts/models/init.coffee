@@ -6,7 +6,7 @@ require [
   # "javascripts/models/enemy.js"
   "javascripts/models/input.js"
   "javascripts/models/chat.js"
-  #"javascripts/views/canvas.js"
+  "javascripts/views/canvas.js"
 
   # "javascripts/models/player.js"
   # "javascripts/models/players.js"
