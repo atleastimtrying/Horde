@@ -7,8 +7,7 @@ require [
   "javascripts/models/input.js"
   "javascripts/models/chat.js"
   "javascripts/views/canvas.js"
-
-  # "javascripts/models/player.js"
+  "javascripts/models/player.js"
   # "javascripts/models/players.js"
   # "javascripts/models/sockets.js"
   # "javascripts/models/twittermanager.js"

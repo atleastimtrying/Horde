@@ -15,6 +15,6 @@ class window.Input
   keyPressUp : =>
     $(@app).trigger 'keyup'
   clicked : (event)=>
-    message = 'left' if event.which is 1
-    message = 'right' if event.which is 3
+    message = 'leftclick' if event.which is 1
+    message = 'rightclick' if event.which is 3
     $(@app).trigger message
