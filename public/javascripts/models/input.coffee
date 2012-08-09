@@ -10,10 +10,10 @@ class window.Input
     message = 'right' if event.keyCode is 68 #d
     message = 'bomb' if event.keyCode is 66 #b
     message = 'pause' if event.keyCode is 32 #spacebar
-    @app.trigger 'key',message
+    $(@app).trigger 'key', message
   keyPressUp : =>
-    @app.trigger 'keyup'
+    $(@app).trigger 'keyup'
   clicked : (event)=>
     message = 'leftclick' if event.which is 1
     message = 'rightclick' if event.which is 3
-    @app.trigger 'click', message
+    $(@app).trigger 'click', message

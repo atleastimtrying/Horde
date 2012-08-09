@@ -8,27 +8,19 @@ class window.LocalPlayer extends Backbone.Model
     @health = 10
     @ammo = 20
     @player = true
-    @rotationModifier = 90 #because sometimes CS makes me sad
+    @rotationModifier = 90
     @instructions = [0, 0]
     @bindings()
-    #@game.players.add @
   bindings:()->
-    $(@app).bind 'leftclick', @leftclick
-    $(@app).bind 'rightclick', @rightclick
-    $(@app).bind 'up' , @up
-    $(@app).bind 'down' , @down
-    $(@app).bind 'left' , @left
-    $(@app).bind 'right' , @right
-    $(@app).bind 'bomb' , @bomb
-    $(@app).bind 'pause' , @pause
-  up: -> 
-    @y -= 1
-    @draw()
-    @transmit()
-  down: -> @y += 1
-  left: -> @x -= 1
-  right: -> @x += 1
-
-  draw: ->
-
-  transmit: ->
+    $(@app).bind 'click', @click
+    $(@app).bind 'key', @key
+  click: (event, data)->
+    
+  key: (event, data)=>
+    @y -= 1 if data is 'up'
+    @y += 1 if data is 'down'
+    @x -= 1 if data is 'left'
+    @x += 1 if data is 'right'
+    $(@app).trigger 'playerdrawn', 
+      x: @x
+      y: @y

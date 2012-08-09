@@ -1,5 +1,5 @@
 class window.CanvasView
-  constructor: ->
+  constructor: (@app)->
     @canvas = $ 'canvas'
     @context = @canvas[0].getContext '2d'
     @canvas.css
@@ -8,5 +8,9 @@ class window.CanvasView
     @canvas[0].width = 700
     @canvas[0].height = 400
     @render()
+    $(@app).bind 'playerdrawn', @drawPlayer
   render: ->
-    @context.fillRect 10,10,10,10
+  drawPlayer: (event, data)=>
+    @context.clearRect data.x - 2, data.y - 2, 14, 14
+    @context.fillStyle = 'black'
+    @context.fillRect data.x, data.y,10,10
