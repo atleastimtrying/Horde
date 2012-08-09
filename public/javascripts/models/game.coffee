@@ -30,5 +30,4 @@ class window.Game extends Backbone.Model
     newPlayer = new Player @app, data.id
 
   movePlayer: (data)->
-  	
   removePlayer: (data)->

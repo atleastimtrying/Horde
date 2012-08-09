@@ -3,7 +3,6 @@ class window.Input
     $(window).bind 'keydown', @keyPressDown
     $(window).bind 'keyup', @keyPressUp
     $('canvas').mousedown @clicked
-    @keyDown = false
   keyPressDown : (event)=>
     message = 'up' if event.keyCode is 87 #w
     message = 'down' if event.keyCode is 83 #s
@@ -11,10 +10,10 @@ class window.Input
     message = 'right' if event.keyCode is 68 #d
     message = 'bomb' if event.keyCode is 66 #b
     message = 'pause' if event.keyCode is 32 #spacebar
-    $(@app).trigger message
+    @app.trigger 'key',message
   keyPressUp : =>
-    $(@app).trigger 'keyup'
+    @app.trigger 'keyup'
   clicked : (event)=>
     message = 'leftclick' if event.which is 1
     message = 'rightclick' if event.which is 3
-    $(@app).trigger message
+    @app.trigger 'click', message

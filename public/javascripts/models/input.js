@@ -15,7 +15,6 @@
       $(window).bind('keydown', this.keyPressDown);
       $(window).bind('keyup', this.keyPressUp);
       $('canvas').mousedown(this.clicked);
-      this.keyDown = false;
     }
 
     Input.prototype.keyPressDown = function(event) {
@@ -38,11 +37,11 @@
       if (event.keyCode === 32) {
         message = 'pause';
       }
-      return $(this.app).trigger(message);
+      return this.app.trigger('key', message);
     };
 
     Input.prototype.keyPressUp = function() {
-      return $(this.app).trigger('keyup');
+      return this.app.trigger('keyup');
     };
 
     Input.prototype.clicked = function(event) {
@@ -53,7 +52,7 @@
       if (event.which === 3) {
         message = 'rightclick';
       }
-      return $(this.app).trigger(message);
+      return this.app.trigger('click', message);
     };
 
     return Input;

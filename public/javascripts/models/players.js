@@ -3,22 +3,23 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  window.Player = (function(_super) {
+  window.Players = (function(_super) {
 
-    __extends(Player, _super);
+    __extends(Players, _super);
 
-    function Player() {
-      return Player.__super__.constructor.apply(this, arguments);
+    function Players() {
+      return Players.__super__.constructor.apply(this, arguments);
     }
 
-    Player.prototype.initialize = function(data) {
-      this.x = data.x;
-      this.y = data.y;
-      return this.id = data.id;
+    Players.prototype.model = Player;
+
+    Players.prototype.initialize = function(app) {
+      this.app = app;
+      return console.log('players initialized');
     };
 
-    return Player;
+    return Players;
 
-  })(Backbone.Model);
+  })(Backbone.Collection);
 
 }).call(this);
