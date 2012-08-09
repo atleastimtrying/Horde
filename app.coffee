@@ -38,28 +38,32 @@ players = []
 
 onSocketConnection = (client)->
   #console.log "new player connected #{client.id}"
-  #client.on 'disconnect', onClientDisconnect
+  client.on 'disconnect', onClientDisconnect
   client.on 'new message', newMessage
-  #client.on 'new player', onNewPlayer
-  #client.on 'move player', onMovePlayer
+  client.on 'new player', onNewPlayer
+  client.on 'move player', onMovePlayer
 
-#onClientDisconnect = ()->
-  #console.log "player disconnected #{@id}"
+onClientDisconnect = ()->
+  console.log "player disconnected #{@id}"
 
 newMessage = (data)->
   @broadcast.emit "new message",
     message: data.message
     type: data.type 
 
-# onNewPlayer = (data)->
-#   newPlayer = new Player data.x, data.y, this.id
-#   this.broadcast.emit "new player", 
-#     id: newPlayer.id
-#     x: newPlayer.x
-#     y: newPlayer.y
-#   this.emit "new player", {id: player.id, x: player.x, y: player.y} for player in players
-#   players.push newPlayer
+onNewPlayer = (data)->
+  newPlayer = new Player data.x, data.y, this.id
+  this.broadcast.emit "new player", 
+    id: newPlayer.id
+    x: newPlayer.x
+    y: newPlayer.y
+  this.emit "new player", {id: player.id, x: player.x, y: player.y} for player in players
+  players.push newPlayer
 
-#onMovePlayer = (data)->
+onMovePlayer = (data)->
+  this.broadcast.emit "move player", 
+    id: data.id
+    x: data.x
+    y: data.y
 
 socket.sockets.on 'connection', onSocketConnection

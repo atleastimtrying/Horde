@@ -3,8 +3,7 @@ class window.Chat extends Backbone.Model
     @input = $ '.chat input'
     @input.keyup @keyup
     @output = $ '.chat'
-
-    @socket = io.connect 'http://192.168.0.9'
+    @socket = io.connect 'http://192.168.1.201'
     @socket.on 'connect', @connect
     @socket.on 'disconnect', @disconnect
     @socket.on 'new message', @newMessage

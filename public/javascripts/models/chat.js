@@ -23,7 +23,7 @@
       this.input = $('.chat input');
       this.input.keyup(this.keyup);
       this.output = $('.chat');
-      this.socket = io.connect('http://192.168.0.9');
+      this.socket = io.connect('http://192.168.1.201');
       this.socket.on('connect', this.connect);
       this.socket.on('disconnect', this.disconnect);
       return this.socket.on('new message', this.newMessage);

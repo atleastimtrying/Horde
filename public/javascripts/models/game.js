@@ -17,12 +17,44 @@
       this.context = $('canvas')[0].getContext('2d');
       this.input = new Input;
       this.chat = new Chat;
-      return this.canvasView = new CanvasView;
+      this.canvasView = new CanvasView;
+      this.socket = io.connect('http://localhost');
+      return this.bindSockets();
+    };
+
+    Game.prototype.bindSockets = function() {
+      this.socket.on('connect', this.connect);
+      this.socket.on('disconnect', this.disconnect);
+      this.socket.on('new player', this.newPlayer);
+      this.socket.on('move player', this.movePlayer);
+      return this.socket.on('remove player', this.removePlayer);
     };
 
     Game.prototype.draw = function() {
       return this.context.fillStyle = "gray";
     };
+
+    Game.prototype.connect = function(data) {
+      this.app.localPlayer = new Player(this, 'wuh?');
+      return this.socket.emit("new player", {
+        x: this.app.localPlayer.x,
+        y: this.app.localPlayer.y
+      });
+    };
+
+    Game.prototype.disconnect = function(data) {
+      return console.log('disconnected from server');
+    };
+
+    Game.prototype.newPlayer = function(data) {
+      var newPlayer;
+      console.log("new player joined : " + data.id);
+      return newPlayer = new Player(this.app, data.id);
+    };
+
+    Game.prototype.movePlayer = function(data) {};
+
+    Game.prototype.removePlayer = function(data) {};
 
     return Game;
 
