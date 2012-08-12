@@ -6,6 +6,7 @@
     __extends(LocalPlayer, Backbone.Model);
 
     function LocalPlayer() {
+      this.draw = __bind(this.draw, this);
       this.key = __bind(this.key, this);
       LocalPlayer.__super__.constructor.apply(this, arguments);
     }
@@ -21,26 +22,31 @@
       this.ammo = 20;
       this.player = true;
       this.rotationModifier = 90;
-      this.instructions = [0, 0];
       return this.bindings();
     };
 
     LocalPlayer.prototype.bindings = function() {
       $(this.app).bind('click', this.click);
-      return $(this.app).bind('key', this.key);
+      $(this.app).bind('key', this.key);
+      return $(this.app).bind('draw', this.draw);
     };
 
     LocalPlayer.prototype.click = function(event, data) {};
 
     LocalPlayer.prototype.key = function(event, data) {
-      if (data === 'up') this.y -= 1;
-      if (data === 'down') this.y += 1;
-      if (data === 'left') this.x -= 1;
-      if (data === 'right') this.x += 1;
-      return $(this.app).trigger('playerdrawn', {
+      if (data === 'up') this.y -= 2;
+      if (data === 'down') this.y += 2;
+      if (data === 'left') this.x -= 2;
+      if (data === 'right') this.x += 2;
+      return this.app.socket.emit("move player", {
         x: this.x,
         y: this.y
       });
+    };
+
+    LocalPlayer.prototype.draw = function(message, context) {
+      context.fillStyle = 'green';
+      return context.fillRect(this.x, this.y, 10, 10);
     };
 
     return LocalPlayer;

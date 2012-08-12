@@ -6,17 +6,21 @@
     __extends(Game, Backbone.Model);
 
     function Game() {
-      this.draw = __bind(this.draw, this);
+      this.playerById = __bind(this.playerById, this);
+      this.removePlayer = __bind(this.removePlayer, this);
+      this.movePlayer = __bind(this.movePlayer, this);
+      this.newPlayer = __bind(this.newPlayer, this);
+      this.connect = __bind(this.connect, this);
       Game.__super__.constructor.apply(this, arguments);
     }
 
     Game.prototype.initialize = function() {
+      this.remotePlayers = [];
       this.input = new Input(this);
-      this.chat = new Chat;
       this.canvasView = new CanvasView(this);
       this.socket = io.connect('http://192.168.0.10');
       this.bindSockets();
-      return this.localPlayer = new LocalPlayer(this);
+      return this.chat = new Chat;
     };
 
     Game.prototype.bindSockets = function() {
@@ -27,11 +31,13 @@
       return this.socket.on('remove player', this.removePlayer);
     };
 
-    Game.prototype.draw = function() {
-      return this.context.fillStyle = "gray";
+    Game.prototype.connect = function(data) {
+      this.localPlayer = new LocalPlayer(this);
+      return this.socket.emit("new player", {
+        x: this.localPlayer.x,
+        y: this.localPlayer.y
+      });
     };
-
-    Game.prototype.connect = function(data) {};
 
     Game.prototype.disconnect = function(data) {
       return console.log('disconnected from server');
@@ -40,12 +46,41 @@
     Game.prototype.newPlayer = function(data) {
       var newPlayer;
       console.log("new player joined : " + data.id);
-      return newPlayer = new Player(this.app, data.id);
+      newPlayer = new Player(this, data);
+      return this.remotePlayers.push(newPlayer);
     };
 
-    Game.prototype.movePlayer = function(data) {};
+    Game.prototype.movePlayer = function(data) {
+      var movePlayer;
+      movePlayer = this.playerById(data.id);
+      movePlayer.x = data.x;
+      return movePlayer.y = data.y;
+    };
 
-    Game.prototype.removePlayer = function(data) {};
+    Game.prototype.removePlayer = function(data) {
+      var removePlayer;
+      console.log("player left : " + data.id);
+      removePlayer = this.playerById(data.id);
+      return removePlayer.remove();
+    };
+
+    Game.prototype.playerById = function(id) {
+      var player, result;
+      result = false;
+      if ((function() {
+        var _i, _len, _ref, _results;
+        _ref = this.remotePlayers;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          player = _ref[_i];
+          _results.push(player.id === id);
+        }
+        return _results;
+      }).call(this)) {
+        result = player;
+      }
+      return result;
+    };
 
     return Game;
 

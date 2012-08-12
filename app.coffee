@@ -45,6 +45,9 @@ onSocketConnection = (client)->
 
 onClientDisconnect = ()->
   console.log "player disconnected #{@id}"
+  removePlayer = playerById @id
+  players.splice players.indexOf(removePlayer), 1
+  this.broadcast.emit "remove player", {id: @id}
 
 newMessage = (data)->
   @broadcast.emit "new message",
@@ -62,8 +65,15 @@ onNewPlayer = (data)->
 
 onMovePlayer = (data)->
   this.broadcast.emit "move player", 
-    id: data.id
+    id: @id
     x: data.x
     y: data.y
+
+playerById = (id)->
+  result = false
+  result = player if player.id is id for player in players
+  result
+
+
 
 socket.sockets.on 'connection', onSocketConnection

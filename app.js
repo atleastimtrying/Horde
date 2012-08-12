@@ -1,5 +1,5 @@
 (function() {
-  var Player, app, connections, express, io, newMessage, onClientDisconnect, onMovePlayer, onNewPlayer, onSocketConnection, players, routes, socket;
+  var Player, app, connections, express, io, newMessage, onClientDisconnect, onMovePlayer, onNewPlayer, onSocketConnection, playerById, players, routes, socket;
 
   express = require('express');
 
@@ -57,7 +57,13 @@
   };
 
   onClientDisconnect = function() {
-    return console.log("player disconnected " + this.id);
+    var removePlayer;
+    console.log("player disconnected " + this.id);
+    removePlayer = playerById(this.id);
+    players.splice(players.indexOf(removePlayer), 1);
+    return this.broadcast.emit("remove player", {
+      id: this.id
+    });
   };
 
   newMessage = function(data) {
@@ -88,10 +94,27 @@
 
   onMovePlayer = function(data) {
     return this.broadcast.emit("move player", {
-      id: data.id,
+      id: this.id,
       x: data.x,
       y: data.y
     });
+  };
+
+  playerById = function(id) {
+    var player, result;
+    result = false;
+    if ((function() {
+      var _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = players.length; _i < _len; _i++) {
+        player = players[_i];
+        _results.push(player.id === id);
+      }
+      return _results;
+    })()) {
+      result = player;
+    }
+    return result;
   };
 
   socket.sockets.on('connection', onSocketConnection);

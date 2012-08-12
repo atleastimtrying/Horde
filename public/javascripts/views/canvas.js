@@ -5,7 +5,7 @@
 
     function CanvasView(app) {
       this.app = app;
-      this.drawPlayer = __bind(this.drawPlayer, this);
+      this.draw = __bind(this.draw, this);
       this.canvas = $('canvas');
       this.context = this.canvas[0].getContext('2d');
       this.canvas.css({
@@ -14,16 +14,13 @@
       });
       this.canvas[0].width = 700;
       this.canvas[0].height = 400;
-      this.render();
-      $(this.app).bind('playerdrawn', this.drawPlayer);
+      this.draw();
     }
 
-    CanvasView.prototype.render = function() {};
-
-    CanvasView.prototype.drawPlayer = function(event, data) {
-      this.context.clearRect(data.x - 2, data.y - 2, 14, 14);
-      this.context.fillStyle = 'black';
-      return this.context.fillRect(data.x, data.y, 10, 10);
+    CanvasView.prototype.draw = function() {
+      this.context.clearRect(0, 0, 700, 400);
+      $(this.app).trigger('draw', this.context);
+      return window.setTimeout(this.draw, 200);
     };
 
     return CanvasView;

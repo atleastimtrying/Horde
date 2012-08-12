@@ -9,18 +9,25 @@ class window.LocalPlayer extends Backbone.Model
     @ammo = 20
     @player = true
     @rotationModifier = 90
-    @instructions = [0, 0]
     @bindings()
-  bindings:()->
+  
+  bindings:->
     $(@app).bind 'click', @click
     $(@app).bind 'key', @key
+    $(@app).bind 'draw', @draw
+  
   click: (event, data)->
     
   key: (event, data)=>
-    @y -= 1 if data is 'up'
-    @y += 1 if data is 'down'
-    @x -= 1 if data is 'left'
-    @x += 1 if data is 'right'
-    $(@app).trigger 'playerdrawn', 
+    @y -= 2 if data is 'up'
+    @y += 2 if data is 'down'
+    @x -= 2 if data is 'left'
+    @x += 2 if data is 'right'
+
+    @app.socket.emit "move player",
       x: @x
       y: @y
+  
+  draw:(message, context)=>
+    context.fillStyle = 'green'
+    context.fillRect @x, @y,10,10
