@@ -3,9 +3,10 @@ class window.Game extends Backbone.Model
     @remotePlayers = []
     @input = new Input @
     @canvasView = new CanvasView @
-    @socket = io.connect 'http://192.168.0.10'
+    @socket = io.connect 'http://' + window.location.hostname
     @bindSockets()
     @chat = new Chat
+  
   bindSockets:->
     @socket.on 'connect', @connect
     @socket.on 'disconnect', @disconnect
@@ -18,6 +19,7 @@ class window.Game extends Backbone.Model
     @socket.emit "new player", 
       x: @localPlayer.x
       y: @localPlayer.y
+      rotation: @localPlayer.rotation
 
   disconnect: (data)->
     console.log 'disconnected from server'
@@ -31,6 +33,7 @@ class window.Game extends Backbone.Model
     movePlayer = @playerById data.id
     movePlayer.x = data.x
     movePlayer.y = data.y
+    movePlayer.rotation = data.rotation
 
   removePlayer: (data)=>
     console.log "player left : #{data.id}"
@@ -41,3 +44,6 @@ class window.Game extends Backbone.Model
     result = false
     result = player if player.id is id for player in @remotePlayers
     result
+
+  degreesToRadians: (degrees)->
+    degrees * (Math.PI/180)

@@ -55,12 +55,13 @@ newMessage = (data)->
     type: data.type 
 
 onNewPlayer = (data)->
-  newPlayer = new Player data.x, data.y, this.id
+  newPlayer = new Player data.x, data.y, data.rotation, this.id
   this.broadcast.emit "new player", 
     id: newPlayer.id
     x: newPlayer.x
     y: newPlayer.y
-  this.emit "new player", {id: player.id, x: player.x, y: player.y} for player in players
+    rotation: newPlayer.rotation
+  this.emit "new player", {id: player.id, x: player.x, y: player.y, rotation: player.rotation} for player in players
   players.push newPlayer
 
 onMovePlayer = (data)->
@@ -68,6 +69,7 @@ onMovePlayer = (data)->
     id: @id
     x: data.x
     y: data.y
+    rotation: data.rotation
 
 playerById = (id)->
   result = false
