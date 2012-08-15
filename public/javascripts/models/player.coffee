@@ -5,11 +5,13 @@ class window.Player extends Backbone.Model
     @rotation = data.rotation
     @id = data.id
     $(@app).bind 'draw', @draw
+    @img = new Image()
+    @img.src = '/images/man.png'
   draw:(message, context)=>
     context.translate @x, @y
     context.rotate @app.degreesToRadians @rotation
     context.fillStyle = 'gray'
-    context.fillRect -5, -5,10,10
+    context.drawImage @img, -5, -5 #, @rectWidth, @rectHeight
     context.rotate 0 - @app.degreesToRadians @rotation
     context.translate -@x, -@y
   remove:=>

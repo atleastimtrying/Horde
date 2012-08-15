@@ -11,5 +11,5 @@ class window.CanvasView
   draw: ()=>
     @context.clearRect 0, 0, 700, 400
     $(@app).trigger 'draw', @context
-    window.setTimeout @draw, 200
+    window.setTimeout @draw, 1000/60
   
