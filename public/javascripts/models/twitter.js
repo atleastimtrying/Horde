@@ -2,9 +2,9 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  window.TwitterManager = (function() {
+  window.Twitter = (function() {
 
-    function TwitterManager(app) {
+    function Twitter(app) {
       var _this = this;
       this.app = app;
       this.makeUser = __bind(this.makeUser, this);
@@ -23,21 +23,20 @@
       });
     }
 
-    TwitterManager.prototype.makeUser = function(user) {
+    Twitter.prototype.makeUser = function(user) {
       this.app.user = user;
       $('body').append('<button id="logout" type="button">log out of this site on twitter</button>');
-      $('#logout').bind('click', function() {
+      return $('#logout').bind('click', function() {
         return twttr.anywhere.signOut();
       });
-      return this.app.sockets.emitTwitterID();
     };
 
-    TwitterManager.prototype.destroyUser = function() {
-      this.user = {};
+    Twitter.prototype.destroyUser = function() {
+      this.app.user = {};
       return $('#logout').remove();
     };
 
-    return TwitterManager;
+    return Twitter;
 
   })();
 

@@ -3,6 +3,7 @@ class window.Game extends Backbone.Model
     @remotePlayers = []
     @input = new Input @
     @canvasView = new CanvasView @
+    @twitter = new Twitter @
     @socket = io.connect 'http://' + window.location.hostname
     @bindSockets()
     @chat = new Chat
