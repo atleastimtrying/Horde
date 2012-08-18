@@ -1,6 +1,7 @@
 canvas{
   width:820px;
   height:600px;
+  border:1px solid grey;
 }
 body{
   padding-top:60px;

@@ -46,5 +46,8 @@ class window.Game extends Backbone.Model
     result = player if player.id is id for player in @remotePlayers
     result
 
-  degreesToRadians: (degrees)->
+  radians: (degrees)->
     degrees * (Math.PI/180)
+  
+  degrees: (radians)->
+    radians * (180/Math.PI)
