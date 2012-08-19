@@ -19,11 +19,13 @@
     }
     LocalPlayer.prototype.initialize = function(app) {
       this.app = app;
-      this.x = Math.random() * 600;
-      this.y = Math.random() * 400;
-      this.rotation = Math.random() * 360;
+      this.x = Math.round(Math.random() * 600);
+      this.y = Math.round(Math.random() * 400);
+      this.rotation = Math.round(Math.random() * 360);
       this.acceleration = 2;
       this.keyDown = false;
+      this.mouseX = this.x;
+      this.mouseY = this.y;
       this.bindings();
       this.rotationModifier = 90;
       return this.instructions = [0, 0];
@@ -39,6 +41,8 @@
       return this.transmit();
     };
     LocalPlayer.prototype.moved = function(event, mouseLocation) {
+      this.mouseX = mouseLocation.x;
+      this.mouseY = mouseLocation.y;
       this.rotation = this.app.degrees(Math.atan2(mouseLocation.y - this.y, mouseLocation.x - this.x)) + 90;
       return this.rotation %= 360;
     };
@@ -60,11 +64,11 @@
     LocalPlayer.prototype.step = function() {
       var forwardspeed, sidespeed;
       forwardspeed = this.instructions[1] * this.acceleration;
-      this.x -= forwardspeed * Math.sin(this.app.radians(this.rotation));
-      this.y += forwardspeed * Math.cos(this.app.radians(this.rotation));
+      this.x -= Math.round(forwardspeed * Math.sin(this.app.radians(this.rotation)));
+      this.y += Math.round(forwardspeed * Math.cos(this.app.radians(this.rotation)));
       sidespeed = this.instructions[0] * this.acceleration;
-      this.x -= sidespeed * Math.sin(this.app.radians(this.rotation - this.rotationModifier));
-      this.y += sidespeed * Math.cos(this.app.radians(this.rotation - this.rotationModifier));
+      this.x -= Math.round(sidespeed * Math.sin(this.app.radians(this.rotation - this.rotationModifier)));
+      this.y += Math.round(sidespeed * Math.cos(this.app.radians(this.rotation - this.rotationModifier)));
       return this.transmit();
     };
     LocalPlayer.prototype.keyUp = function(event) {
@@ -77,14 +81,25 @@
         rotation: this.rotation
       });
     };
+    LocalPlayer.prototype.paint = function(context) {
+      context.fillStyle = '#ccc';
+      context.fillEllipse(0, 0, 10);
+      context.fillStyle = 'black';
+      context.fillEllipse(3, -3, 3);
+      context.fillEllipse(-3, -3, 3);
+      context.fillStyle = 'white';
+      context.fillEllipse(3, -4, 1);
+      return context.fillEllipse(-3, -4, 1);
+    };
     LocalPlayer.prototype.draw = function(message, context) {
       if (this.keyDown) {
         this.step();
       }
+      context.fillStyle = 'rgba(100,100,255,0.3)';
+      context.fillEllipse(this.mouseX, this.mouseY, 5);
       context.translate(this.x, this.y);
       context.rotate(this.app.radians(this.rotation));
-      context.fillStyle = 'green';
-      context.fillRect(-5, -5, 10, 10);
+      this.paint(context);
       context.rotate(0 - this.app.radians(this.rotation));
       return context.translate(-this.x, -this.y);
     };

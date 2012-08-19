@@ -1,10 +1,12 @@
 class window.LocalPlayer extends Backbone.Model
   initialize: (@app)->
-    @x = Math.random() * 600
-    @y = Math.random() * 400
-    @rotation = Math.random() * 360
+    @x = Math.round Math.random() * 600
+    @y = Math.round Math.random() * 400
+    @rotation = Math.round Math.random() * 360
     @acceleration = 2
     @keyDown = false
+    @mouseX = @x
+    @mouseY = @y
     # @health = 10
     # @ammo = 20
     # @player = true
@@ -24,6 +26,8 @@ class window.LocalPlayer extends Backbone.Model
     @transmit()
   
   moved:(event, mouseLocation)=>
+    @mouseX = mouseLocation.x
+    @mouseY = mouseLocation.y
     @rotation = @app.degrees(Math.atan2(mouseLocation.y - @y, mouseLocation.x - @x)) + 90
     @rotation %= 360
   
@@ -38,12 +42,12 @@ class window.LocalPlayer extends Backbone.Model
   
   step: ->
     forwardspeed = @instructions[1] * @acceleration
-    @x -= forwardspeed * Math.sin @app.radians @rotation      
-    @y += forwardspeed * Math.cos @app.radians @rotation
+    @x -= Math.round forwardspeed * Math.sin @app.radians @rotation      
+    @y += Math.round forwardspeed * Math.cos @app.radians @rotation
 
     sidespeed = @instructions[0] * @acceleration
-    @x -= sidespeed * Math.sin @app.radians @rotation - @rotationModifier      
-    @y += sidespeed * Math.cos @app.radians @rotation - @rotationModifier
+    @x -= Math.round sidespeed * Math.sin @app.radians @rotation - @rotationModifier      
+    @y += Math.round sidespeed * Math.cos @app.radians @rotation - @rotationModifier
     @transmit()
   
   keyUp: (event)=>
@@ -55,11 +59,22 @@ class window.LocalPlayer extends Backbone.Model
       y: @y
       rotation: @rotation
   
+  paint:(context)->
+    context.fillStyle = '#ccc'
+    context.fillEllipse 0, 0, 10
+    context.fillStyle = 'black'
+    context.fillEllipse 3, -3, 3
+    context.fillEllipse -3, -3, 3
+    context.fillStyle = 'white'
+    context.fillEllipse 3, -4, 1
+    context.fillEllipse -3, -4, 1
+    
   draw:(message, context)=>
     @step() if @keyDown
+    context.fillStyle = 'rgba(100,100,255,0.3)'
+    context.fillEllipse(@mouseX, @mouseY, 5);
     context.translate @x, @y
     context.rotate @app.radians @rotation
-    context.fillStyle = 'green'
-    context.fillRect -5, -5,10,10
+    @paint(context)
     context.rotate 0 - @app.radians @rotation
     context.translate -@x, -@y

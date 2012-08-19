@@ -2,6 +2,11 @@ class window.CanvasView
   constructor: (@app)->
     @canvas = $ 'canvas'
     @context = @canvas[0].getContext '2d'
+    @context.fillEllipse = (x,y,radius)->
+      @beginPath()
+      @arc x, y, radius, 0, Math.PI * 2, false
+      @closePath()
+      @fill()
     @canvas.css
       width:"700px" 
       height:'400px'
