@@ -1,9 +1,16 @@
 {
-    "name": "Express-test"
-  , "version": "0.0.1"
-  , "dependencies": {
-      "express": "2.5.0"
-    , "jade": ">= 0.0.1"
-    , "socket.io": ">= 0.0.1"
+  "name": "Horde",
+  "version": "0.0.1-4",
+  "dependencies": {
+    "express": "2.5.0",
+    "jade": ">= 0.0.1",
+    "socket.io": ">= 0.0.1"
+  },
+  "subdomain": "atleastimtrying.horde",
+  "scripts": {
+    "start": "app.js"
+  },
+  "engines": {
+    "node": "0.6.x"
   }
 }

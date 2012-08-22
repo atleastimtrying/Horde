@@ -16,9 +16,6 @@
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(express.cookieParser());
-    app.use(express.session({
-      secret: 'your secret here'
-    }));
     app.use(app.router);
     return app.use(express["static"](__dirname + '/public'));
   };
@@ -38,17 +35,26 @@
 
   app.listen(8080);
 
-  console.log("Express server listening on port " + (app.address().port));
-
   io = require('socket.io');
-
-  Player = (require('./Player')).Player;
 
   socket = io.listen(app);
 
   socket.set("log level", 2);
 
   players = [];
+
+  Player = (function() {
+
+    function Player(x, y, rotation, id) {
+      this.x = x;
+      this.y = y;
+      this.rotation = rotation;
+      this.id = id;
+    }
+
+    return Player;
+
+  })();
 
   onSocketConnection = function(client) {
     client.on('disconnect', onClientDisconnect);

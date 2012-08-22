@@ -9,7 +9,6 @@ app.configure = ->
   app.use express.bodyParser()
   app.use express.methodOverride()
   app.use express.cookieParser()
-  app.use express.session { secret: 'your secret here' }
   app.use app.router
   app.use express.static __dirname + '/public'
 
@@ -25,16 +24,19 @@ app.configure 'production', ->
 app.get '/', routes.index
 
 app.listen 8080
-console.log "Express server listening on port #{app.address().port}"
+#console.log "Express server listening on port #{app.address().port}"
 
 #sockets stuff
 
 io = require 'socket.io'
-Player = (require './Player').Player
+
 socket = io.listen app
 socket.set "log level", 2
 
 players = []
+
+class Player
+  constructor: (@x, @y, @rotation, @id)->
 
 onSocketConnection = (client)->
   #console.log "new player connected #{client.id}"
