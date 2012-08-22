@@ -11,7 +11,7 @@ require [
   "javascripts/models/localplayer.js"
   # "javascripts/models/players.js"
   # "javascripts/models/sockets.js"
-  "javascripts/models/twitter.js"
+  # "javascripts/models/twitter.js"
   ], ->
     $ ->
       window.game = new window.Game()
