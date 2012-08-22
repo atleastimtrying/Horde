@@ -49,3 +49,35 @@ p.info{
 p.message{
 	color:#636;
 }
+div.games{
+  
+}
+div.games ul{
+  
+}
+div.games ul li{
+  list-style:none;
+  background:#eee;
+  margin:2px;
+}
+div.games ul li .name{
+  background:#333;
+  color:white;
+  padding:3px 1px;
+}
+
+div.games ul li .players{
+
+}
+
+div.games ul li .players a{
+
+}
+
+div.games ul li .join{
+
+}
+
+div.players{
+  
+}
