@@ -11,8 +11,7 @@
   connections = [];
 
   app.configure = function() {
-    app.set('views', __dirname + '/views');
-    app.set('view engine', 'jade');
+    app.use(express['static'](__dirname + '/views'));
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(express.cookieParser());
@@ -30,8 +29,6 @@
   app.configure('production', function() {
     return app.use(express.errorHandler());
   });
-
-  app.get('/', routes.index);
 
   app.listen(8080);
 

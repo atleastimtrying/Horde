@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Horde</title>
+  <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css">
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <script src='http://platform.twitter.com/anywhere.js?id=cuJUFF6sdL2l4ldoYZ2Q&v=1'></script>
+  <script src="/javascripts/libs/underscore.js"></script>
+  <script src="/javascripts/libs/backbone.js"></script>
+  <script src="/javascripts/libs/jquery-1.5.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/javascripts/libs/require.js" data-main="/javascripts/models/init"></script>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="container-fluid">
+        <a class="brand">Horde</a>
+        <ul class="nav">
+          <li>
+            <a id="new-game">New Game</a>
+          </li>
+          <li>
+            <a id="view-games-in-progress">View Active Games</a>
+          </li>
+          <li>
+            <a id="view-invites">View Invites</a>
+          </li>
+          <li>
+            <span id="login"></span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="sidebar">
+      <div class="well">
+        <h5>stats</h5>
+        <ul>
+          <li class="ammo"></li>
+          <li class="kills"></li>
+          <li class="deaths"></li>
+          <li class="health"></li>
+        </ul>
+      </div>
+    </div>
+    <div class="content">
+      <canvas id="canvas"></canvas>
+    </div>
+    <div class="chat">
+      <input type="text"/>
+    </div>
+  </div>
+  <footer>
+    <p>made by
+      <a href="www.twitter.com/atleastimtrying">@atleastimtrying</a>
+    </p>
+  </footer>
+</body>
+</html>
