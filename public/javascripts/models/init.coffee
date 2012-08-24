@@ -9,6 +9,7 @@ require [
   "javascripts/views/canvas.js"
   "javascripts/models/player.js"
   "javascripts/models/localplayer.js"
+  "javascripts/models/historyManager.js"
   # "javascripts/models/players.js"
   # "javascripts/models/sockets.js"
   # "javascripts/models/twitter.js"

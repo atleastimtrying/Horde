@@ -35,9 +35,26 @@ socket = io.listen app
 socket.set "log level", 2
 
 players = []
+games = []
 
 class Player
   constructor: (@x, @y, @rotation, @id)->
+
+class Game
+  constructor: (@players, @ownerId, @name, @timeOut, @scoreOut, @privacy)->
+    @enemies = []
+    @bullets = []
+    @map = ''
+  
+  join:(player)->
+    if @privacy isnt 'private'
+      if @hasPlayer player.id
+        console.log 'yo'
+  
+  hasPlayer: (id)->
+    isPlayer = false
+    isPlayer = true is id = player.id for player in @players
+    isPlayer
 
 onSocketConnection = (client)->
   #console.log "new player connected #{client.id}"
@@ -45,6 +62,21 @@ onSocketConnection = (client)->
   client.on 'new message', newMessage
   client.on 'new player', onNewPlayer
   client.on 'move player', onMovePlayer
+  
+  client.on 'read player', players.read
+  client.on 'update player', players.update
+  client.on 'create player', players.create
+  client.on 'delete player', players.delete
+
+  client.on 'read game', games.read
+  client.on 'read games', games.readAll
+  client.on 'update game', games.update
+  client.on 'delete game', games.delete
+
+onReadPlayer = (id)->
+  this.broadcast.emit "showing player", playerById @id
+
+
 
 onClientDisconnect = ()->
   console.log "player disconnected #{@id}"
@@ -78,7 +110,5 @@ playerById = (id)->
   result = false
   result = player if player.id is id for player in players
   result
-
-
 
 socket.sockets.on 'connection', onSocketConnection

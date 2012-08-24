@@ -8,6 +8,7 @@
   <script src="/javascripts/libs/underscore.js"></script>
   <script src="/javascripts/libs/backbone.js"></script>
   <script src="/javascripts/libs/jquery-1.5.min.js"></script>
+  <script src="/javascripts/libs/history.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/javascripts/libs/require.js" data-main="/javascripts/models/init"></script>
 </head>
@@ -18,23 +19,23 @@
         <a class="brand">Horde</a>
         <ul class="nav">
           <li>
-            <a id="new-game">New Game</a>
+            <a href='/games/'>Games</a>
           </li>
           <li>
-            <a id="view-games-in-progress">View Active Games</a>
+            <a href='/players/'>Players</a>
           </li>
           <li>
-            <a id="view-invites">View Invites</a>
+            <a href='/login/'>Login/out</a>
           </li>
           <li>
-            <span id="login"></span>
+            <a href='/edit/'>edit my profile</a>
           </li>
         </ul>
       </div>
     </div>
   </div>
   <div class="container-fluid">
-    <div class="sidebar">
+    <!-- <div class="sidebar">
       <div class="well">
         <h5>stats</h5>
         <ul>
@@ -44,7 +45,7 @@
           <li class="health"></li>
         </ul>
       </div>
-    </div>
+    </div> -->
     <div class="content">
       <canvas id="canvas"></canvas>
     </div>
@@ -57,5 +58,80 @@
       <a href="www.twitter.com/atleastimtrying">@atleastimtrying</a>
     </p>
   </footer>
+
+  <script type='text/html' id='gameTemplate'>
+    <div class="content">
+      <canvas id="canvas"></canvas>
+    </div>
+    <div class="chat">
+      <input type="text"/>
+    </div>
+  </script>
+
+  <script type='text/html' id='gamesTemplate'>
+    <div class="content">
+      <ul class='games'>
+        <li><a href='/games/new' class='newGame'>New Game</a></li>
+        <li>
+          <h3>Game Title</h3>
+          <span class='players'>
+            <a href='/users/123' class='viewUser'>atleastimtrying</a>
+            <a href='/users/321' class='viewUser'>MrJaba</a>
+            <a href='/users/222' class='viewUser'>kerryb</a>
+            <a href='/users/333' class='viewUser'>danhigham</a>
+          </span>
+          <a href='/games/1234' class='watchGame'>watch</a>
+        </li>
+        <li>
+          <h3>Game Title</h3>
+          <span class='players'>
+            <a href='/users/123' class='viewUser'>atleastimtrying</a>
+            <a href='/users/321' class='viewUser'>MrJaba</a>
+            <a href='/users/222' class='viewUser'>kerryb</a>
+          </span>
+          <a href='/games/1234' class='joinGame'>joi n</a>
+        </li>
+      </ul>
+    </div>
+  </script>
+
+  <script type='text/html' id='usersTemplate'>
+    <div class="content">
+      <ul class='users'>
+        <li>
+          <img>
+          <h3>Username</h3>
+          <span class='score'>Kills: 23</span>
+          <span class='gamesPlayed'>Games Played: 3</span>
+        </li>
+      </ul>
+    </div>
+  </script>
+
+  <script type='text/html' id='userTemplate'>
+    <div class="content">
+      <section class='user'>          
+        <img>
+        <h3>Username</h3>
+        <p>A description goes here</p>
+        <span class='score'>Kills: 23</span>
+        <span class='gamesPlayed'>Games Played: 3</span>
+        <img class='sprite'>
+      </section>
+    </div>
+  </script>
+
+  <script type='text/html' id='editUserTemplate'>
+    <div class="content">
+      <section class='user'>          
+        <input type='text' class='username'>
+        <input type='text' class='password'>
+        <input type='text' class='description'>
+        <img class='sprite'>
+        <input type='submit'>
+      </section>
+    </div>
+  </script>
+  
 </body>
 </html>
