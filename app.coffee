@@ -1,41 +1,97 @@
-express = require('express')
-routes = require('./routes')
-app = module.exports = express.createServer()
-connections = []
+class Server
+  constructor: (@app)->
+    @express = require 'express'
+    @server = module.exports = @express.createServer()
+    @server.use @express.static __dirname + '/public'
+    @server.listen 8080
 
-app.configure = ->
-  # app.set 'views', __dirname + '/views'
-  # app.set 'view engine', 'jade'
-  app.use express['static'] __dirname + '/views'
-  app.use express.bodyParser()
-  app.use express.methodOverride()
-  app.use express.cookieParser()
-  app.use app.router
-  app.use express.static __dirname + '/public'
+class DB
+  constructor:(@app)->
+    @mongojs = require 'mongojs'
+    collections = ["users", "reports"]
+    @db = @mongojs.connect 'testdb', ['users', 'games']
+    @db.users.save {name: 'john'}, @logresults
+  logresults: (err, saved)->
+    if err || !saved
+      console.log "User not saved"
+    else 
+      console.log "User saved"
 
-app.configure 'development', ->
-  app.use express.errorHandler { 
-    dumpExceptions: true
-    showStack: true
-  }
+class Chat 
+  constructor:(@app)->
+    @app.sockets.sockets.on 'new message', @newMessage
+  
+  newMessage: (data)->
+    @broadcast.emit "new message",
+      message: data.message
+      type: data.type 
 
-app.configure 'production', ->
-  app.use express.errorHandler() 
+class Sockets
+  constructor: (@app)->
+    @io = require 'socket.io'
+    @socket = @io.listen @app.server.server
+    @socket.set "log level", 2
+    @connections = []
+    @socket.sockets.on 'connection', @connections
+  connections: (client)=>
+    console.log "new user connected #{client.id}"
+    client.on 'disconnect', @sockets.onClientDisconnect
+    
+    client.on 'read user', @users.read
+    client.on 'read users', @users.readAll
+    client.on 'update user', @users.update
+    client.on 'create user', @users.create
+    client.on 'delete user', @users.delete
 
-# app.get '/', routes.index
+    client.on 'read game', @games.read
+    client.on 'read games', @games.readAll
+    client.on 'create game', @games.create
+    client.on 'update game', @games.update
+    client.on 'delete game', @games.delete
 
-app.listen 8080
-#console.log "Express server listening on port #{app.address().port}"
+class App 
+  constructor:->
+    @db = new DB @
+    @server = new Server @
+    @chat = new Chat @
+    @users = new Users @
+    @games = new Games @
+    @sockets = new Sockets @
+  
+  byId:(collection, item)->
+    result = false
+    result = item if item.id is id for item in collection
+    result
+  
+  removeById:(collection,item)=>
+    removeItem = @byId collection, id
+    collection.splice collection.indexOf(removeItem), 1
 
-#sockets stuff
+class User
+  constructor: ->
 
-io = require 'socket.io'
+class Users
+  constructor: (@app)->
+    @collection = []
+  read: (id)-> @app.byId @collection, id
+  readAll: -> @collection
+  create: ->
+    user = new User()
+    @collection.push user
+  update: (id)->
 
-socket = io.listen app
-socket.set "log level", 2
+  delete: (id)-> @app.removeById @collection, id
 
-players = []
-games = []
+class Games
+  constructor: (@app)->
+    @collection = []
+  read: (id)-> @app.byId @collection, id
+  readAll: -> @collection
+  create: ->
+    game = new Game()
+    @collection.push game
+  update: (id)->
+  delete: (id)-> @app.removeById @collection, id
 
 class Player
   constructor: (@x, @y, @rotation, @id)->
@@ -45,6 +101,31 @@ class Game
     @enemies = []
     @bullets = []
     @map = ''
+    client.on 'new player', @onNewPlayer
+    client.on 'move player', @onMovePlayer
+  
+  onPlayerDisconnect: ()->
+    console.log "player disconnected #{@id}"
+    removePlayer = playerById @id
+    players.splice players.indexOf(removePlayer), 1
+    this.broadcast.emit "remove player", {id: @id}
+
+  onNewPlayer: (data)->
+    newPlayer = new Player data.x, data.y, data.rotation, this.id
+    this.broadcast.emit "new player", 
+      id: newPlayer.id
+      x: newPlayer.x
+      y: newPlayer.y
+      rotation: newPlayer.rotation
+    this.emit "new player", {id: player.id, x: player.x, y: player.y, rotation: player.rotation} for player in players
+    players.push newPlayer
+
+  onMovePlayer: (data)->
+    this.broadcast.emit "move player", 
+      id: @id
+      x: data.x
+      y: data.y
+      rotation: data.rotation
   
   join:(player)->
     if @privacy isnt 'private'
@@ -56,59 +137,10 @@ class Game
     isPlayer = true is id = player.id for player in @players
     isPlayer
 
-onSocketConnection = (client)->
-  #console.log "new player connected #{client.id}"
-  client.on 'disconnect', onClientDisconnect
-  client.on 'new message', newMessage
-  client.on 'new player', onNewPlayer
-  client.on 'move player', onMovePlayer
-  
-  client.on 'read player', players.read
-  client.on 'update player', players.update
-  client.on 'create player', players.create
-  client.on 'delete player', players.delete
-
-  client.on 'read game', games.read
-  client.on 'read games', games.readAll
-  client.on 'update game', games.update
-  client.on 'delete game', games.delete
-
-onReadPlayer = (id)->
-  this.broadcast.emit "showing player", playerById @id
+  playerById: (id)->
+    result = false
+    result = player if player.id is id for player in @players
+    result
 
 
-
-onClientDisconnect = ()->
-  console.log "player disconnected #{@id}"
-  removePlayer = playerById @id
-  players.splice players.indexOf(removePlayer), 1
-  this.broadcast.emit "remove player", {id: @id}
-
-newMessage = (data)->
-  @broadcast.emit "new message",
-    message: data.message
-    type: data.type 
-
-onNewPlayer = (data)->
-  newPlayer = new Player data.x, data.y, data.rotation, this.id
-  this.broadcast.emit "new player", 
-    id: newPlayer.id
-    x: newPlayer.x
-    y: newPlayer.y
-    rotation: newPlayer.rotation
-  this.emit "new player", {id: player.id, x: player.x, y: player.y, rotation: player.rotation} for player in players
-  players.push newPlayer
-
-onMovePlayer = (data)->
-  this.broadcast.emit "move player", 
-    id: @id
-    x: data.x
-    y: data.y
-    rotation: data.rotation
-
-playerById = (id)->
-  result = false
-  result = player if player.id is id for player in players
-  result
-
-socket.sockets.on 'connection', onSocketConnection
+app = new App
