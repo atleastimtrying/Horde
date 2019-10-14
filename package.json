@@ -2,7 +2,7 @@
   "name": "Horde",
   "version": "0.0.1-4",
   "dependencies": {
-    "express": "2.5.0",
+    "express": "4.17.1",
     "jade": ">= 0.0.1",
     "socket.io": ">= 0.0.1"
   },
